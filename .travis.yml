@@ -9,7 +9,11 @@ before_install:
 
 matrix:
   include:
-    - sudo: required
+    - os: linux
+      sudo: required
       dist: trusty
+    - os: linux
+      sudo: required
+      dist: xenial
 
 script: make
