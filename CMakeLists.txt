@@ -16,9 +16,10 @@ else()
 endif()
 
 #defines
-#add_definitions(-D UNIX)
-#add_definitions(-D LINUX)
-#add_definitions(-D _GNU_SOURCE)
+add_definitions(-D UNIX)
+add_definitions(-D LINUX)
+add_definitions(-D _GNU_SOURCE)
+add_definitions(-std=c++11)
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${PROJECT_SOURCE_DIR}/cmake)
 
@@ -72,14 +73,11 @@ find_package(mvIMPACT QUIET)
 
 include(src/shared/CMakeLists.txt.inc)
 
-if(${mvIMPACT_FOUND} MATCHES "TRUE")
-  include_directories(${mvIMPACT_INCLUDE_DIRS})
+if(${mvIMPACT_FOUND} MATCHES "true")
+  include_directories(${mvIMPACT_INCLUDE_DIR})
   add_definitions(-D MVIMPACT)
   set (SHARED_SRCS ${SHARED_SRCS} ${shared_dir}/capture/capture_bluefox2.cpp)
   set (SHARED_HEADERS ${SHARED_HEADERS} ${shared_dir}/capture/capture_bluefox2.h)
-  message(STATUS "mvIMPACT found => BlueFox2 support enabled")
-else()
-  message(STATUS "mvIMPACT NOT found => BlueFox2 support disabled")
 endif()
 
 set(FLYCAP_HINTS "/usr/include/flycapture")
@@ -106,6 +104,19 @@ if(OpenCV_FOUND)
   message(STATUS "OpenCV found")
 else()
   message(WARNING "OpenCV NOT found => Neural Calibration not available")
+endif()
+
+find_package( Pylon5 QUIET )
+if(OpenCV_FOUND)
+  if(PYLON5_FOUND)
+    include_directories(SYSTEM ${PYLON5_INCLUDE_DIRS})
+    add_definitions(-D PYLON5)
+    message(STATUS "Pylon5 found")
+    set (SHARED_SRCS ${SHARED_SRCS} ${shared_dir}/capture/capture_basler.cpp)
+    set (SHARED_HEADERS ${SHARED_HEADERS} ${shared_dir}/capture/capture_basler.h)
+  else()
+    message(STATUS "Pylon5 not found")
+  endif()
 endif()
 
 include_directories(${PROJECT_SOURCE_DIR}/src/app)
@@ -253,7 +264,8 @@ set (libs ${QT_LIBRARIES}
 	${OPENGL_glu_LIBRARY}
 	${PROTOBUF_LIBRARIES}
 	${DC1394_LIBRARIES}
-	${mvIMPACT_LIBRARIES}
+	${mvIMPACT_LIBS}
+	${PYLON5_LIBRARIES}
 	${OpenCV_LIBS}
 	${FLYCAP_LIBS}
 )

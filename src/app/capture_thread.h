@@ -39,6 +39,9 @@
 #include "capture_flycap.h"
 #endif
 
+#ifdef PYLON5
+#include "capture_basler.h"
+#endif
 
 /*!
   \class   CaptureThread
@@ -49,33 +52,36 @@ class CaptureThread : public QThread
 {
 Q_OBJECT
 protected:
-	QMutex stack_mutex; //this mutex protects multi-threaded operations on the stack
-	QMutex capture_mutex; //this mutex protects multi-threaded operations on the capture control
-	VisionStack * stack;
-	FrameCounter * counter;
-	CaptureInterface * capture;
-	CaptureInterface * captureDC1394;
-	CaptureInterface * captureBlueFox2;
-	CaptureInterface * captureFlycap;
-	CaptureInterface * captureFiles;
-	CaptureInterface * captureGenerator;
-	FrameBuffer * rb;
-	bool _kill;
-	int camId;
-	VarList * settings;
-	VarList * bluefox2;
-	VarList * flycap;
-	VarList * dc1394;
-	VarList * generator;
-	VarList * fromfile;
-	VarList * control;
-	VarTrigger * c_start;
-	VarTrigger * c_stop;
-	VarTrigger * c_reset;
-	VarTrigger * c_refresh;
-	VarBool * c_auto_refresh;
-	VarStringEnum * captureModule;
-	Timer timer;
+  QMutex stack_mutex; //this mutex protects multi-threaded operations on the stack
+  QMutex capture_mutex; //this mutex protects multi-threaded operations on the capture control
+  VisionStack * stack;
+  FrameCounter * counter;
+  CaptureInterface * capture;
+  CaptureInterface * captureDC1394;
+  CaptureInterface * captureBlueFox2;
+  CaptureInterface * captureFlycap;
+  CaptureInterface * captureFiles;
+  CaptureInterface * captureGenerator;
+  CaptureInterface * captureBasler;
+  AffinityManager * affinity;
+  FrameBuffer * rb;
+  bool _kill;
+  int camId;
+  VarList * settings;
+  VarList * dc1394;
+  VarList * bluefox2;
+  VarList * flycap;
+  VarList * generator;
+  VarList * fromfile;
+  VarList * basler;
+  VarList * control;
+  VarTrigger * c_start;
+  VarTrigger * c_stop;
+  VarTrigger * c_reset;
+  VarTrigger * c_refresh;
+  VarBool * c_auto_refresh;
+  VarStringEnum * captureModule;
+  Timer timer;
 
 public slots:
 	bool init();
